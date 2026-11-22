@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kalkulator Margin Beli Pinang</title>
+<style>
+  :root {
+    --bg-page: #000000;
+    --surface: #141414;
+    --text-primary: #f5f5f5;
+    --text-secondary: #9a9a9a;
+    --border: rgba(255,255,255,.16);
+    --border-strong: rgba(255,255,255,.35);
+    --bg-danger: #791F1F;  --text-danger: #F7C1C1;
+    --bg-accent: #0C447C;  --text-accent: #B5D4F4;
+    --bg-success: #27500A; --text-success: #C0DD97;
+    --bg-pro: #3C3489;     --text-pro: #CECBF6;
+    --bg-warning: #633806; --text-warning: #FAC775;
+    --radius: 8px;
+    --font-sans: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; color-scheme: dark; }
+  body {
+    margin: 0; background: var(--bg-page); color: var(--text-primary);
+    font-family: var(--font-sans); font-size: 16px; line-height: 1.6; overflow-x: hidden;
+  }
+  .wrap { width: 100%; max-width: 480px; margin: 0 auto; padding: 12px 12px 28px; }
+
+  .merk { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; }
+  .merk img { width: 36px; height: 36px; border-radius: var(--radius); object-fit: cover; }
+  .merk .huruf {
+    width: 36px; height: 36px; border-radius: var(--radius); display: none;
+    align-items: center; justify-content: center; font-weight: 600;
+    background: var(--bg-warning); color: var(--text-warning);
+  }
+  .merk .nama { font-size: 16px; font-weight: 600; }
+
+  h2 { font-size: 14px; font-weight: 600; margin: 18px 0 8px; color: var(--text-primary); }
+
+  .grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 10px; margin: 0 0 10px; }
+  .grid label, .full label { font-size: 12.5px; color: var(--text-secondary); line-height: 1.4; display: block; }
+  .full { margin: 0 0 10px; }
+  input[type=number] {
+    width: 100%; height: 38px; margin-top: 4px; padding: 0 10px; font-size: 16px;
+    font-family: inherit; color: var(--text-primary); background: var(--surface);
+    border: 1px solid var(--border-strong); border-radius: var(--radius);
+  }
+  input[type=number]:focus { outline: none; border-color: var(--text-warning); box-shadow: 0 0 0 3px var(--bg-warning); }
+  .cek { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-primary); margin: 0 0 8px; }
+  .cek input { width: 18px; height: 18px; accent-color: #FAC775; }
+
+  .kotak {
+    border-radius: 12px; padding: 10px 12px; margin: 0 0 10px; font-size: 14px; line-height: 1.6;
+  }
+  .kotak b { font-weight: 600; }
+  .kotak .besar { font-size: 22px; font-weight: 700; line-height: 1.3; }
+  .kuning { border: 2px solid var(--text-warning); background: var(--bg-warning); color: var(--text-warning); }
+  .netral { border: 1px solid var(--border-strong); background: var(--surface); }
+  .baris2 { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; padding: 2px 0; }
+  .baris2 span:first-child { color: var(--text-secondary); }
+  .kuning .baris2 span:first-child { color: var(--text-warning); opacity: .85; }
+  .baris2 span:last-child { font-weight: 600; text-align: right; }
+
+  .status { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+  .st-danger  { background: var(--bg-danger);  color: var(--text-danger); }
+  .st-accent  { background: var(--bg-accent);  color: var(--text-accent); }
+  .st-success { background: var(--bg-success); color: var(--text-success); }
+  .st-pro     { background: var(--bg-pro);     color: var(--text-pro); }
+
+  .legenda { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 10px; font-size: 12px; }
+  .legenda span { padding: 3px 8px; border-radius: 6px; }
+
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: clamp(10.5px, 3.2vw, 13px); line-height: 1.35; }
+  th { font-weight: 500; padding: 6px 2px; text-align: right; color: var(--text-secondary); font-size: clamp(10px, 2.9vw, 12px); }
+  th:first-child { text-align: left; padding-left: 6px; }
+  td { padding: 6px 2px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--border); }
+  td:first-child { text-align: left; padding-left: 6px; white-space: normal; }
+  td small { display: block; font-size: 9.5px; line-height: 1.2; font-weight: 500; }
+  tr.s td { font-weight: 600; border-bottom-color: transparent; }
+  tr.danger td  { background: var(--bg-danger);  color: var(--text-danger); }
+  tr.accent td  { background: var(--bg-accent);  color: var(--text-accent); }
+  tr.success td { background: var(--bg-success); color: var(--text-success); }
+  tr.pro td     { background: var(--bg-pro);     color: var(--text-pro); }
+  tr.pat td     { border-top: 2px solid var(--text-warning); border-bottom: 2px solid var(--text-warning); }
+  tr.pat td small.p { color: var(--text-warning); }
+
+  button {
+    width: 100%; height: 42px; margin: 12px 0 0; font-size: 15px; font-weight: 600; font-family: inherit;
+    color: #000; background: #FAC775; border: 0; border-radius: var(--radius); cursor: pointer;
+  }
+  button:active { transform: scale(.98); }
+  .catatan { font-size: 12px; color: var(--text-secondary); margin: 14px 0 0; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="merk">
+    <!-- Taruh file logo.png di folder yang sama. Kalau belum ada, huruf yang tampil. -->
+    <img src="logo.png" alt="Logo" onerror="this.style.display='none';document.getElementById('huruf').style.display='flex'">
+    <div class="huruf" id="huruf">R</div>
+    <span class="nama" id="nama">Nama Merk Bos Reza</span>
+  </div>
+
+  <h2>Data harga</h2>
+  <div class="grid">
+    <label>Harga super/kg (Rp)<input type="number" id="hs" value="28000" step="500" inputmode="numeric"></label>
+    <label>Upah/kg (Rp)<input type="number" id="up" value="3000" step="100" inputmode="numeric"></label>
+    <label>Isi super per karung (kg)<input type="number" id="kg" value="10" step="0.5" inputmode="decimal"></label>
+    <label>Mau beli berapa karung<input type="number" id="jml" value="20" step="1" inputmode="numeric"></label>
+    <label>Patokan untung/karung (Rp)<input type="number" id="tgt" value="100000" step="5000" inputmode="numeric"></label>
+    <label>Ongkos lain/karung (Rp)<input type="number" id="ong" value="0" step="1000" inputmode="numeric"></label>
+  </div>
+
+  <label class="cek"><input type="checkbox" id="bon"> Hitung juga bonus asalan dan kandis</label>
+  <div class="grid">
+    <label>Bonus (kg per karung)<input type="number" id="bkg" value="2" step="0.5" inputmode="decimal"></label>
+    <label>Harga rata-rata bonus/kg (Rp)<input type="number" id="bhg" value="16500" step="500" inputmode="numeric"></label>
+  </div>
+
+  <h2>Patokan untung</h2>
+  <div class="kotak kuning" id="pat"></div>
+
+  <h2>Cek harga tawaran dari tokeh</h2>
+  <div class="full">
+    <label>Harga beli per karung (Rp)<input type="number" id="tw" value="150000" step="1000" inputmode="numeric"></label>
+  </div>
+  <div class="kotak netral" id="hasilTw"></div>
+
+  <h2>Tabel per margin</h2>
+  <div class="grid">
+    <label>Margin dari (%)<input type="number" id="m1" value="30" step="1" inputmode="numeric"></label>
+    <label>Sampai (%)<input type="number" id="m2" value="50" step="1" inputmode="numeric"></label>
+  </div>
+  <div class="legenda">
+    <span style="background:var(--bg-danger);color:var(--text-danger)">30% batas tipis</span>
+    <span style="background:var(--bg-accent);color:var(--text-accent)">35% patokan aman</span>
+    <span style="background:var(--bg-success);color:var(--text-success)">40% bagus</span>
+    <span style="background:var(--bg-pro);color:var(--text-pro)">45% sangat bagus</span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:20%">Margin</th>
+        <th style="width:26%">Beli max</th>
+        <th style="width:26%">Untung/krg</th>
+        <th style="width:28%" id="thTot">20 karung</th>
+      </tr>
+    </thead>
+    <tbody id="tb"></tbody>
+  </table>
+
+  <button id="salin" type="button">Salin ringkasan untuk WhatsApp</button>
+
+  <p class="catatan">
+    Hitungan simpel: karung dianggap isi super saja. Bonus asalan dan kandis hanya dihitung kalau kotaknya dicentang.
+    Rumus: beli max = hasil jual × (100% − margin) − upah − ongkos lain.
+    Margin dihitung dari hasil jual.
+  </p>
+</div>
+
+<script>
+  // ====== GANTI DI SINI ======
+  var NAMA_MERK = "Nama Merk Bos Reza";
+  var HURUF_LOGO = "R";
+  // ===========================
+  document.getElementById("nama").textContent = NAMA_MERK;
+  document.getElementById("huruf").textContent = HURUF_LOGO;
+  document.title = "Kalkulator Pinang - " + NAMA_MERK;
+
+  var S = {30:['danger','Batas'], 35:['accent','Aman'], 40:['success','Bagus'], 45:['pro','Top']};
+  var ringkasan = "";
+
+  function g(id){ return parseFloat(document.getElementById(id).value) || 0; }
+  function f(n){ return Math.round(n).toLocaleString('id-ID'); }
+  function p1(n){ return n.toFixed(1).replace('.', ','); }
+  function row(a, b){ return '<div class="baris2"><span>' + a + '</span><span>' + b + '</span></div>'; }
+
+  function status(m){
+    if (m >= 45) return ['st-pro', 'Sangat bagus'];
+    if (m >= 40) return ['st-success', 'Bagus'];
+    if (m >= 35) return ['st-accent', 'Aman'];
+    if (m >= 30) return ['st-danger', 'Batas tipis'];
+    if (m >= 0)  return ['st-danger', 'Di bawah batas'];
+    return ['st-danger', 'Rugi'];
+  }
+
+  function draw(){
+    var hs = g('hs'), up = g('up'), kg = g('kg'), jml = g('jml');
+    var tgt = g('tgt'), ong = g('ong'), tw = g('tw');
+    var bon = document.getElementById('bon').checked;
+    var bkg = bon ? g('bkg') : 0;
+    var bhg = g('bhg');
+
+    var jualSuper = hs * kg;
+    var jual = jualSuper + bkg * bhg;
+    var upah = up * (kg + bkg);
+    var biayaLain = upah + ong;
+
+    document.getElementById('thTot').textContent = jml + ' karung';
+
+    var beliT = jual - biayaLain - tgt;
+    var mgT = jual > 0 ? tgt / jual * 100 : 0;
+    document.getElementById('pat').innerHTML =
+      '<b>Untung Rp ' + f(tgt) + ' per karung</b><br>' +
+      'Beli maksimal <span class="besar">Rp ' + f(beliT) + '</span> per karung' +
+      row('Hasil jual per karung', 'Rp ' + f(jual)) +
+      row('Upah + ongkos per karung', 'Rp ' + f(biayaLain)) +
+      row('Margin', p1(mgT) + '%') +
+      row('Modal beli ' + jml + ' karung', 'Rp ' + f(beliT * jml)) +
+      row('Hasil jual ' + jml + ' karung', 'Rp ' + f(jual * jml)) +
+      row('Untung ' + jml + ' karung', 'Rp ' + f(tgt * jml));
+
+    var untungTw = jual - biayaLain - tw;
+    var mgTw = jual > 0 ? untungTw / jual * 100 : 0;
+    var st = status(mgTw);
+    var bepSuper = kg > 0 ? (tw + biayaLain - bkg * bhg) / kg : 0;
+    document.getElementById('hasilTw').innerHTML =
+      '<span class="status ' + st[0] + '">' + st[1] + ' • margin ' + p1(mgTw) + '%</span>' +
+      row('Untung per karung', 'Rp ' + f(untungTw)) +
+      row('Untung ' + jml + ' karung', 'Rp ' + f(untungTw * jml)) +
+      row('Modal beli ' + jml + ' karung', 'Rp ' + f(tw * jml)) +
+      row('Untung dari modal', (tw > 0 ? p1(untungTw / tw * 100) : '0') + '%') +
+      row('Harga super balik modal', 'Rp ' + f(bepSuper) + '/kg') +
+      row('Selisih dari patokan', (tw - beliT > 0 ? 'lebih mahal Rp ' + f(tw - beliT) : 'lebih murah Rp ' + f(beliT - tw)));
+
+    var m1 = Math.round(g('m1')), m2 = Math.round(g('m2'));
+    if (m2 < m1) { var t = m1; m1 = m2; m2 = t; }
+    if (m2 - m1 > 60) m2 = m1 + 60;
+    var best = m1, bd = 1e15, m;
+    for (m = m1; m <= m2; m++) {
+      var d = Math.abs(jual * m / 100 - tgt);
+      if (d < bd) { bd = d; best = m; }
+    }
+    var h = '';
+    for (m = m1; m <= m2; m++) {
+      var u = jual * m / 100, beli = jual * (100 - m) / 100 - biayaLain;
+      var s = S[m];
+      var cls = [];
+      if (s) cls.push('s', s[0]);
+      if (m == best) cls.push('pat');
+      var lab = '';
+      if (s) lab += '<small>' + s[1] + '</small>';
+      if (m == best) lab += '<small class="p">patokan</small>';
+      h += '<tr class="' + cls.join(' ') + '"><td>' + m + '%' + lab + '</td>' +
+           '<td>' + f(beli) + '</td><td>' + f(u) + '</td><td>' + f(u * jml) + '</td></tr>';
+    }
+    document.getElementById('tb').innerHTML = h;
+
+    ringkasan =
+      NAMA_MERK + ' - hitungan beli pinang\n' +
+      'Harga super Rp ' + f(hs) + '/kg, upah Rp ' + f(up) + '/kg, isi ' + kg + ' kg/karung\n' +
+      'Patokan untung Rp ' + f(tgt) + '/karung -> beli maksimal Rp ' + f(beliT) + '/karung (margin ' + p1(mgT) + '%)\n' +
+      jml + ' karung: modal Rp ' + f(beliT * jml) + ', untung Rp ' + f(tgt * jml) + '\n' +
+      'Tawaran Rp ' + f(tw) + '/karung -> untung Rp ' + f(untungTw) + '/karung, margin ' + p1(mgTw) + '% (' + st[1] + ')';
+  }
+
+  ['hs','up','kg','jml','tgt','ong','bkg','bhg','tw','m1','m2'].forEach(function(id){
+    document.getElementById(id).addEventListener('input', draw);
+  });
+  document.getElementById('bon').addEventListener('change', draw);
+
+  document.getElementById('salin').addEventListener('click', function(){
+    var btn = this;
+    function ok(){ btn.textContent = 'Sudah disalin'; setTimeout(function(){ btn.textContent = 'Salin ringkasan untuk WhatsApp'; }, 1800); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(ringkasan).then(ok, fallback);
+    } else { fallback(); }
+    function fallback(){
+      var ta = document.createElement('textarea');
+      ta.value = ringkasan; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); ok(); } catch(e) {}
+      document.body.removeChild(ta);
+    }
+  });
+
+  draw();
+</script>
+</body>
+</html>
